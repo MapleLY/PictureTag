@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/style.css" rel="stylesheet" />
+		<style>
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 22%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">花瓣之叶</h1>
+		</header>
+		<div class="mui-content">
+			<div style="text-align: center;"><img src="../../images/logo1.png" width="150px;" /></div>
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label><img src="../../images/user1.jpg" width="20px;"/></label>
+					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+				</div>
+				<div class="mui-input-row">
+					<label><img src="../../images/password.png"  width="23px;" /></label>
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="请输入密码">
+				</div>
+				<div class="mui-input-row">
+					<label><img src="../../images/pwd1.png"  width="20px;" /></label>
+					<input id='password1' type="password" class="mui-input-clear mui-input" placeholder="请确认密码">
+				</div>
+				<div class="mui-input-row">
+					<label><img src="../../images/yx.png"  width="20px;" /></label>
+					<input id='email' type="email" class="mui-input-clear mui-input" placeholder="请输入邮箱">
+				</div>
+			</form>
+			<div class="mui-content-padded">
+				<button id='reg-btn' class="mui-btn mui-btn-block mui-btn-primary">注册</button>
+			</div>
+		</div>
+		<script src="../../js/common/common.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			(function($, doc) {
+				$.init();
+				var regBtn = document.getElementById("reg-btn");
+				var accountBox = document.getElementById("account");
+				var passwordBox = document.getElementById("password");
+				var passwordBox1 = document.getElementById("password1");
+				var emailBox = document.getElementById("email");
+
+				regBtn.addEventListener('tap', function(event) {
+					var accountValue = accountBox.value;
+					var passwordValue = passwordBox.value;
+					var password1Value = passwordBox1.value;
+					var emailValue = emailBox.value;
+					register(accountValue, passwordValue, password1Value, emailValue);
+				});
+			}(mui, document))
+
+			function register(accountValue, passwordValue, password1Value, emailValue) {
+				if(passwordValue != password1Value) {
+					plus.nativeUI.toast('密码两次输入不一致');
+					return;
+				}
+				mui.ajax(getContextURL() + "RegisterServlet", {
+					data: {
+						straccount: accountValue,
+						strpassword: passwordValue,
+						stremail: emailValue,
+					},
+					type: "post",
+					timeout: 5000,
+					success: function(result) {
+						if(result == "true") {
+							alert("注册成功");
+							window.location.href = "../login/login.html#";
+						} else {
+							alert("注册失败");
+						}
+					},
+					error: function() {
+						alert("连接失败");
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

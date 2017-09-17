@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>标签</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<style>
+			html,body {
+				background-color: #efeff4;
+			}
+			.title{
+				margin: 20px 15px 10px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+		</style>
+	</head>
+	<body>
+		<input type="hidden" id="useraccount" value="${straccount}" />
+		<div id="slider" class="mui-slider" style="height: 300px;">
+			<div class="mui-slider-group mui-slider-loop">
+				<!-- 左 -->
+				<div id="imgleft" class="mui-slider-item">
+					<img id="left" src="">
+				</div>
+				<!-- 中-->
+				<div class="mui-slider-item" style="text-align: center;">
+					<img id="middle" style="width: 200px;">
+				</div>
+				<!-- 右 -->
+				<div id="imgright" class="mui-slider-item">
+					<img id="right">
+				</div>
+			</div>
+		</div>
+		<div id="buttoner" style="height: 130px;">
+			
+		</div>
+		<div id="butterseter" style="margin: 10px;">
+			<input id="addtext" type="text" style="width: 80%;" placeholder="输入标签"/>
+			<button id="addbtn" type="button" style="height: 40px;" class="mui-btn mui-btn-primary mui-btn-outlined">添加</button>
+		</div>
+		
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/common/common.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			var picid = 1;//当前图片id
+			var picnumberMax = 1;//图片数量最大值
+			var straccount = "";//账户初始化
+			var strlabelstring = "";//查询到目前账户中最新的标签 字符串
+			var yesbtn = 0;//初始点击颜色判断
+			var addText;//添加窗体对象
+			var picoldlabel;//图片标签（修改前）数组
+			(function($, doc){
+				$.init();
+				
+				//获取当前账号
+				console.log(window.location.href);
+				var strurl = window.location.href.split("#");
+				straccount = strurl[1];
+				if(strurl.length>2){
+					picid=strurl[2];
+				}
+				
+				initpicnumber();//获取图片数量
+				initpic(picid);//初始化第一个图片
+				initlabel(picid);
+
+				//向右划
+				slider.addEventListener("swiperight",function(){
+					if(picid!=1){
+						picid--;
+						initpic(picid);
+						initlabel(picid);
+					}
+				});
+				//向左划
+				slider.addEventListener("swipeleft",function(){
+					if(picid!=picnumberMax){
+						picid++;
+						initpic(picid);
+						initlabel(picid);
+					}
+				});
+				
+				
+				
+				
+				//添加按钮点击
+				var addOne = doc.getElementById("addbtn");
+				addText = doc.getElementById("addtext");
+				addOne.addEventListener("tap",function(){
+					if(addText!=""){
+						addlabel(picid, addText.value);
+					}
+				});
+				
+			}(mui, document))
+
+			//about
+			//获取图片数量，用于限制图片范围
+			function initpicnumber(){
+				mui.ajax(getContextURL()+"PictureServlet",{
+					data:{
+						method:"getPicNumber"
+					},
+					type:"post",
+					timeout:5000,
+					async:false,
+					success:function(result){
+						picnumberMax = result;
+					},
+					error:function(){
+						console.log("图片数量，连接失败");
+					}
+				});
+			}
+
+			//slider
+			//获取图片
+			function initpic(strid){
+				mui.ajax(getContextURL()+"PictureServlet",{
+					data:{
+						id:strid,
+						method:"getPicId"
+					},
+					type:"post",
+					timeout:5000,
+					success:function(result){
+						document.getElementById("middle").src = getContextURL() + "picture/" + result;
+					},
+					error:function(){
+						console.log("图片信息，连接失败");
+					}
+				});
+			}
+			
+			//slider
+			//获取标签
+			function initlabel(strid){
+				mui.ajax(getContextURL()+"ButtonerServlet",{
+					data:{
+						id:strid,
+						method:"getAll"
+					},
+					type:"post",
+					timeout:5000,
+					success:function(result){
+						console.debug(result);
+						
+						labelnew();
+						var boollabel = strlabelstring.split(",");
+
+						var data = result.split(",")
+						picoldlabel = data;
+						
+						str = "";
+						for(var i=0;i<data.length;i++){
+							var colorbtn = data[i].substring(0,1);
+							var valuebtn = data[i].substring(2);
+							
+							var goboollabel = picid + "+" + i;
+							for(var s=0;s<boollabel.length;s++){
+								if(goboollabel==boollabel[s]){
+									colorbtn = "s";
+									break;
+								}
+							}
+							
+							
+							var rgbbtn = "#FFFFFF";
+							var rgbtext = "#000000";
+							if(colorbtn=="d"){
+								rgbbtn = "#FFBD9D";
+							}else if(colorbtn=="c"){
+								rgbbtn = "#DEFFAC";
+							}else if(colorbtn=="b"){
+								rgbbtn = "#DCB5FF";
+							}else if(colorbtn=="a"){
+								rgbbtn = "#FFFFFF";
+							}else if(colorbtn=="s"){
+								rgbbtn = "#CF2D28";
+								rgbtext = "#FFFFFF";
+							}
+							
+							var showStr = "<button id='button"+ i +"' type='button' class='mui-btn' style='margin:10px;background-color:"+ rgbbtn +";color:"+ rgbtext +"'>" + valuebtn + "</button>";
+							str += showStr;
+						}
+						document.getElementById("buttoner").innerHTML = str;
+						
+						//按钮标签点击改变颜色（并记录用户点击详情）
+						for (var j=0;j<data.length;j++) {
+							document.getElementById("button"+j).addEventListener("tap" ,function(e){
+								labellog(e.target);
+							});
+						};
+					},
+					error:function(){
+						console.log("获取标签，连接失败");
+					}
+				});
+			}
+			
+			//label
+			//点击标签，触发事件
+			function labellog(currentbtn){
+				labelnew();//查询标签
+				var strlabellist = strlabelstring.split(",");
+				console.log("存在的有"+strlabellist);
+				var cbtnid = currentbtn.id.substring(6);
+				var strlabelone = picid + "+" + cbtnid;
+				console.log("点击的为"+strlabelone);
+				var logb = 0;
+				
+				for(var btni=0;btni<strlabellist.length;btni++){
+					if(strlabelone==strlabellist[btni]){//已存在，删除
+						logb = 1;//是否已有标签的判断
+						
+						//人的标签修改
+						var strlabelnew = "";
+						if(strlabellist.length>1){
+							for(var btnewi=0;btnewi<strlabellist.length;btnewi++){
+								if(strlabelone!=strlabellist[btnewi]){
+									strlabelnew = strlabelnew + "," + strlabellist[btnewi];
+								}
+							}
+							strlabelnew = strlabelnew.substring(1);
+						}
+						//图的标签修改
+						var picstrlabelnew = "";
+						var btnvalueold = currentbtn.innerHTML;
+						var timebtnold = btnvalueold.substring(btnvalueold.indexOf("+")+1);
+						var timebtnnew = parseInt(timebtnold) - 1;
+						
+						var colorstyle = "a";
+						if(parseInt(timebtnnew)>=15){
+							colorstyle = "d";
+						}else if(parseInt(timebtnnew)>=10){
+							colorstyle = "c";
+						}else if(parseInt(timebtnnew)>=5){
+							colorstyle = "b";
+						}else{
+							colorstyle = "a";
+						}
+						
+						var btnvaluenew = colorstyle + "*" +btnvalueold.substring(0,btnvalueold.indexOf("+"))+ "+" +timebtnnew;
+						
+						/*console.log("--所以过去为："+btnvalueold);
+						console.log("--过去获取到的次数为："+timebtnold);
+						console.log("--现在获取到的次数为："+timebtnnew);
+						console.log("--所以现在为："+btnvaluenew);*/
+						
+						for(var pici=0;pici<picoldlabel.length;pici++){
+							console.log("原来为"+picoldlabel[pici].substring(2));
+							if(btnvalueold!=picoldlabel[pici].substring(2)){
+								picstrlabelnew = picstrlabelnew + "," + picoldlabel[pici];
+							}else{
+								picstrlabelnew = picstrlabelnew + "," + btnvaluenew;
+							}
+						}
+						console.log("最终"+picstrlabelnew);
+						picstrlabelnew = picstrlabelnew.substring(1);
+						
+						updatelabel(strlabelnew,picstrlabelnew);
+						break;
+					}
+				}
+				if(logb == 0){//不存在，进行添加
+					
+					//人的标签修改
+					var strlabelnew = "";
+					if(strlabellist!=""){
+						for(var btnewi=0;btnewi<strlabellist.length;btnewi++){
+							strlabelnew = strlabelnew + "," + strlabellist[btnewi]
+						}
+						strlabelnew = strlabelnew + "," + strlabelone;
+						strlabelnew = strlabelnew.substring(1);
+					}else{	
+						strlabelnew += strlabelone;
+					}
+					//图的标签修改
+					var picstrlabelnew = "";
+					var btnvalueold = currentbtn.innerHTML;
+					var timebtnold = btnvalueold.substring(btnvalueold.indexOf("+")+1);
+					var timebtnnew = parseInt(timebtnold) + 1;
+					
+					var colorstyle = "a";
+					if(parseInt(timebtnnew)>=15){
+						colorstyle = "d";
+					}else if(parseInt(timebtnnew)>=10){
+						colorstyle = "c";
+					}else if(parseInt(timebtnnew)>=5){
+						colorstyle = "b";
+					}else{
+						colorstyle = "a";
+					}
+					
+					var btnvaluenew = colorstyle + "*" +btnvalueold.substring(0,btnvalueold.indexOf("+"))+ "+" +timebtnnew;
+					
+					/*console.log("++所以过去为："+btnvalueold);
+					console.log("++过去获取到的次数为："+timebtnold);
+					console.log("++现在获取到的次数为："+timebtnnew);
+					console.log("++所以现在为："+btnvaluenew);*/
+					
+					for(var pici=0;pici<picoldlabel.length;pici++){
+						console.log("原来为"+picoldlabel[pici].substring(2));
+						if(btnvalueold!=picoldlabel[pici].substring(2)){
+							picstrlabelnew = picstrlabelnew + "," + picoldlabel[pici];
+						}else{
+							picstrlabelnew = picstrlabelnew + "," + btnvaluenew;
+						}
+					}
+					console.log("最终"+picstrlabelnew);
+					picstrlabelnew = picstrlabelnew.substring(1);
+					
+					updatelabel(strlabelnew,picstrlabelnew);
+				}
+				
+			}
+			
+			//label
+			//获取当前账户实时标签的记录状态
+			function labelnew(){
+				mui.ajax(getContextURL()+"ButtonerServlet",{
+					data:{
+						account:straccount,
+						method:"searchLabel"
+					},
+					type:"post",
+					timeout:5000,
+					async:false,
+					success:function(result){
+						strlabelstring = result;
+						
+					},
+					error:function(){
+						console.log("查询标签，连接失败");
+					}
+				});
+			}
+			//label
+			//修改账户和图片实时标签
+			function updatelabel(strlabelnew, picstrlabelnew){
+				mui.ajax(getContextURL()+"ButtonerServlet",{
+					data:{
+						account:straccount,//用户id
+						strpicid:picid,//图片id
+						picstrlabel:picstrlabelnew,//图的标签
+						strlabel:strlabelnew,//人的标签
+						method:"updateLabel"
+					},
+					type:"post",
+					timeout:5000,
+					async:false,
+					success:function(result){
+						initlabel(picid);
+						console.log("更新");
+					},
+					error:function(){
+						console.log("账户更新标签，连接失败");
+					}
+				});
+			}
+			
+			//text
+			//文本输入，添加标签
+			function addlabel(picid, strtext){
+				mui.ajax(getContextURL()+"ButtonerServlet",{
+					data:{
+						strpicid:picid,
+						labeltext:strtext,
+						method:"addOne"
+					},
+					type:"post",
+					timeout:5000,
+					success:function(result){
+						if(result=="true"){
+							initlabel(picid);
+							addText.value="";
+							mui.toast("添加成功 ");
+						}else{
+							mui.toast("添加失败");
+						}
+					},
+					error:function(){
+						console.log("添加标签，连接失败");
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

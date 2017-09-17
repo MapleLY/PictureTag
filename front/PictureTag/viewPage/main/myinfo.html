@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/style.css" rel="stylesheet" />
+		<style>
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 22%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">花瓣之叶</h1>
+		</header>
+		<div class="mui-content">
+			<br />
+			<div style="text-align: center;"><span style="font-size: 30px;">我的信息</span></div>
+			<br />
+			<form class="mui-input-group">
+				<div class="mui-input-row">
+					<label><img src="../../images/user1.jpg" width="20px;"/></label>
+					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="请输入账号">
+				</div>
+				<div class="mui-input-row">
+					<label><img src="../../images/sex.jpg"  width="23px;" /></label>
+					<input id='password' type="text" class="mui-input-clear mui-input" placeholder="请输入密码">
+				</div>
+				<div class="mui-input-row">
+					<label><img src="../../images/yx.png"  width="20px;" /></label>
+					<input id='email' type="email" class="mui-input-clear mui-input" placeholder="请输入邮箱">
+				</div> 
+			</form>
+			<div class="mui-content-padded">
+				<button id='reg-btn' class="mui-btn mui-btn-block mui-btn-primary">修改</button>
+			</div>
+		</div>
+		<script src="../../js/common/common.js"></script>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/app.js"></script>
+		<script type="text/javascript" charset="utf-8">
+		
+			var strurl = window.location.href.split("#");
+			var straccount = strurl[1];
+			console.log("第二步"+straccount);
+			
+			(function($, doc) {
+				$.init();
+				
+				getusername();
+				getusersex();
+				getemail();
+				
+				var regBtn = document.getElementById("reg-btn");
+				var accountBox = document.getElementById("account");
+				var passwordBox = document.getElementById("password");
+				var passwordBox1 = document.getElementById("password1");
+				var emailBox = document.getElementById("email");
+
+				regBtn.addEventListener('tap', function(event) {
+					var accountValue = accountBox.value;
+					var passwordValue = passwordBox.value;
+					var password1Value = passwordBox1.value;
+					var emailValue = emailBox.value;
+					register(accountValue, passwordValue, password1Value, emailValue);
+				});
+			}(mui, document))
+
+			function getusername(){
+				mui.ajax(getContextURL()+"UserInfoServlet",{
+					data:{
+						account:straccount,
+						method:"name"
+					},
+					type:"post",
+					timeout:5000,
+					async:false,
+					success:function(result){
+						document.getElementById("account").value = result;
+						
+					},
+					error:function(){
+						console.log("查询标签，连接失败");
+					}
+				});
+			}
+			
+			function getusersex(){
+				mui.ajax(getContextURL()+"UserInfoServlet",{
+					data:{
+						account:straccount,
+						method:"sex"
+					},
+					type:"post",
+					timeout:5000,
+					async:false,
+					success:function(result){
+						document.getElementById("password").value = result;
+						
+					},
+					error:function(){
+						console.log("查询标签，连接失败");
+					}
+				});
+			}
+			
+			function getemail(){
+				mui.ajax(getContextURL()+"UserInfoServlet",{
+					data:{
+						account:straccount,
+						method:"email"
+					},
+					type:"post",
+					timeout:5000,
+					async:false,
+					success:function(result){
+						document.getElementById("email").value = result;
+						
+					},
+					error:function(){
+						console.log("查询标签，连接失败");
+					}
+				});
+			}
+
+
+			function register(accountValue, passwordValue, password1Value, emailValue) {
+				if(passwordValue != password1Value) {
+					plus.nativeUI.toast('密码两次输入不一致');
+					return;
+				}
+				mui.ajax(getContextURL() + "RegisterServlet", {
+					data: {
+						straccount: accountValue,
+						strpassword: passwordValue,
+						stremail: emailValue,
+					},
+					type: "post",
+					timeout: 5000,
+					success: function(result) {
+						if(result == "true") {
+							alert("注册成功");
+							window.location.href = "../login/login.html#";
+						} else {
+							alert("注册失败");
+						}
+					},
+					error: function() {
+						alert("连接失败");
+					}
+				});
+			}
+		</script>
+	</body>
+
+</html>

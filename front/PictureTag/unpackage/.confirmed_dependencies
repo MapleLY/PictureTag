@@ -1,0 +1,108 @@
+{
+  "login.html": {
+    "resources": [
+      "js/mui/mui.min.js",
+      "css/login/style.css",
+      "css/mui/mui.min.css",
+      "js/login/login.js",
+      "js/common/common.js",
+      "js/login/jquery-2.1.0.js"
+    ],
+    "refer": []
+  },
+  "viewPage/login/login.html": {
+    "resources": [
+      "css/login/style.css",
+      "css/mui/mui.min.css",
+      "js/mui/mui.min.js",
+      "js/login/login.js",
+      "js/common/common.js",
+      "viewPage/main/tab-webview-main.html",
+      "css/mui.min.css",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "images/user1.jpg",
+      "images/logo1.png",
+      "images/password.png",
+      "js/app.js",
+      "css/style.css",
+      "js/mui.enterfocus.js"
+    ],
+    "refer": [
+      "viewPage/main/tab-webview-main.html",
+      "viewPage/register/reg.html"
+    ]
+  },
+  "viewPage/main/tab-webview-main.html": {
+    "resources": [
+      "viewPage/main/tab-webview-subpage-about.html",
+      "viewPage/login/login.html",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "viewPage/main/tab-webview-subpage-chat.html"
+    ],
+    "refer": [
+      "viewPage/main/tab-webview-subpage-about.html",
+      "viewPage/main/tab-webview-subpage-setting.html",
+      "viewPage/main/tab-webview-subpage-contact.html",
+      "viewPage/main/tab-webview-subpage-chat.html",
+      "viewPage/login/login.html"
+    ]
+  },
+  "viewPage/main/tab-webview-subpage-about.html": {
+    "resources": [
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "js/common/common.js"
+    ],
+    "refer": []
+  },
+  "viewPage/main/tab-webview-subpage-chat.html": {
+    "resources": [
+      "css/app.css",
+      "js/mui.lazyload.js",
+      "js/mui.lazyload.img.js",
+      "js/common/common.js",
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css",
+      "viewPage/main/tab-webview-main.html",
+      "viewPage/main/tab-webview-subpage-about.html"
+    ],
+    "refer": [
+      "viewPage/main/tab-webview-main.html",
+      "viewPage/main/tab-webview-subpage-about.html"
+    ]
+  },
+  "viewPage/register/reg.html": {
+    "resources": [
+      "fonts/mui.ttf",
+      "images/yx.png",
+      "images/pwd1.png",
+      "js/app.js",
+      "images/user1.jpg",
+      "images/logo1.png",
+      "js/common/common.js",
+      "js/mui.min.js",
+      "css/mui.min.css",
+      "css/style.css",
+      "images/password.png"
+    ],
+    "refer": []
+  },
+  "viewPage/main/tab-webview-subpage-setting.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ]
+  },
+  "viewPage/main/tab-webview-subpage-contact.html": {
+    "resources": [
+      "js/mui.min.js",
+      "fonts/mui.ttf",
+      "css/mui.min.css"
+    ]
+  }
+}
